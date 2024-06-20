@@ -4,7 +4,7 @@ module obcA {
   # Symbolic constants for port numbers
   # ----------------------------------------------------------------------
 
-    enum Ports_RateGroups {
+    enum a_Ports_RateGroups {
       rateGroup1
       rateGroup2
       rateGroup3
@@ -103,15 +103,15 @@ module obcA {
       a_blockDrv.CycleOut -> a_rateGroupDriver.CycleIn
 
       # Rate group 1
-      a_rateGroupDriver.CycleOut[Ports_RateGroups.rateGroup1] -> a_rateGroup1.CycleIn
+      a_rateGroupDriver.CycleOut[a_Ports_RateGroups.rateGroup1] -> a_rateGroup1.CycleIn
 
       # Rate group 2
-      a_rateGroupDriver.CycleOut[Ports_RateGroups.rateGroup2] -> a_rateGroup2.CycleIn
+      a_rateGroupDriver.CycleOut[a_Ports_RateGroups.rateGroup2] -> a_rateGroup2.CycleIn
       a_rateGroup2.RateGroupMemberOut[0] -> a_fileDownlink.Run
       a_rateGroup2.RateGroupMemberOut[1] -> a_cmdSeq.schedIn
 
       # Rate group 3
-      a_rateGroupDriver.CycleOut[Ports_RateGroups.rateGroup3] -> a_rateGroup3.CycleIn
+      a_rateGroupDriver.CycleOut[a_Ports_RateGroups.rateGroup3] -> a_rateGroup3.CycleIn
       a_rateGroup3.RateGroupMemberOut[0] -> a_health.Run
       a_rateGroup3.RateGroupMemberOut[1] -> a_blockDrv.Sched
       a_rateGroup3.RateGroupMemberOut[2] -> a_bufferManager.schedIn
@@ -131,9 +131,13 @@ module obcA {
       a_comStub.comDataOut -> a_deframer.framedIn
 
       a_deframer.framedDeallocate -> a_bufferManager.bufferSendIn
-      a_deframer.comOut -> a_cmdDisp.seqCmdBuff
+      # a_deframer.comOut -> a_cmdDisp.seqCmdBuff
+      a_deframer.comOut -> a_cmdSplitter.CmdBuff
+      a_cmdSplitter.LocalCmd -> a_cmdDisp.seqCmdBuff
 
-      a_cmdDisp.seqCmdStatus -> a_deframer.cmdResponseIn
+      # a_cmdDisp.seqCmdStatus -> a_deframer.cmdResponseIn
+      a_cmdDisp.seqCmdStatus -> a_cmdSplitter.seqCmdStatus
+      a_cmdSplitter.forwardSeqCmdStatus -> a_deframer.cmdResponseIn
 
       a_deframer.bufferAllocate -> a_bufferManager.bufferGetCallee
       a_deframer.bufferOut -> a_fileUplink.bufferSendIn
@@ -186,6 +190,9 @@ module obcA {
     connections hub {
       a_hub.LogSend -> a_eventLogger.LogRecv
       a_hub.TlmSend -> a_tlmSend.TlmRecv
+      
+      a_cmdSplitter.RemoteCmd -> a_hub.portIn[0]
+      a_hub.portOut[0] -> a_cmdSplitter.seqCmdStatus
     }
   }
 

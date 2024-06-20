@@ -6,11 +6,14 @@
 ####
 
 set(SOURCE_FILES
-  "${CMAKE_CURRENT_LIST_DIR}/instances.fpp"
-  "${CMAKE_CURRENT_LIST_DIR}/GDSPackets.xml"
+  # "${CMAKE_CURRENT_LIST_DIR}/instances.fpp"
+  # "${CMAKE_CURRENT_LIST_DIR}/GDSDictionaryPackets.xml"
   "${CMAKE_CURRENT_LIST_DIR}/topology.fpp"
-  "${CMAKE_CURRENT_LIST_DIR}/GDSTopology.cpp"
+  # "${CMAKE_CURRENT_LIST_DIR}/GDSDictionaryTopology.cpp"
+  "${CMAKE_CURRENT_LIST_DIR}/empty.cpp"
 )
+
+
 set(MOD_DEPS
   Fw/Logger
   Svc/PosixTime
@@ -20,3 +23,4 @@ set(MOD_DEPS
 )
 
 register_fprime_module()
+

@@ -1,24 +1,24 @@
 // ======================================================================
-// \title  GDSTopologyDefs.hpp
+// \title  GDSDictionaryTopologyDefs.hpp
 // \brief required header file containing the required definitions for the topology autocoder
 //
 // ======================================================================
-#ifndef GDS_GDSTOPOLOGYDEFS_HPP
-#define GDS_GDSTOPOLOGYDEFS_HPP
+#ifndef GDSDICTIONARY_GDSDICTIONARYTOPOLOGYDEFS_HPP
+#define GDSDICTIONARY_GDSDICTIONARYTOPOLOGYDEFS_HPP
 
 #include "Drv/BlockDriver/BlockDriver.hpp"
 #include "Fw/Types/MallocAllocator.hpp"
-#include "GDS/Top/FppConstantsAc.hpp"
-#include "Svc/FramingProtocol/FprimeProtocol.hpp"
+// #include "GDSDictionary/Top/FppConstantsAc.hpp"
+// #include "Svc/FramingProtocol/FprimeProtocol.hpp"
 #include "Svc/Health/Health.hpp"
 
 // Definitions are placed within a namespace named after the deployment
-namespace GDS {
+namespace GDSDictionary {
 
 /**
  * \brief required type definition to carry state
  *
- * The topology autocoder requires an object that carries state with the name `GDS::TopologyState`. Only the type
+ * The topology autocoder requires an object that carries state with the name `GDSDictionary::TopologyState`. Only the type
  * definition is required by the autocoder and the contents of this object are otherwise opaque to the autocoder. The contents are entirely up
  * to the definition of the project. Here, they are derived from command line inputs.
  */
@@ -84,5 +84,5 @@ namespace rateGroup3 {
 enum { WARN = 3, FATAL = 5 };
 }
 }  // namespace PingEntries
-}  // namespace GDS
+}  // namespace GDSDictionary
 #endif

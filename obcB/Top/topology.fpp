@@ -4,7 +4,7 @@ module obcB {
   # Symbolic constants for port numbers
   # ----------------------------------------------------------------------
 
-    enum Ports_RateGroups {
+    enum b_Ports_RateGroups {
       rateGroup1
       rateGroup2
       rateGroup3
@@ -102,17 +102,17 @@ module obcB {
       b_blockDrv.CycleOut -> b_rateGroupDriver.CycleIn
 
       # Rate group 1
-      b_rateGroupDriver.CycleOut[Ports_RateGroups.rateGroup1] -> b_rateGroup1.CycleIn
+      b_rateGroupDriver.CycleOut[b_Ports_RateGroups.rateGroup1] -> b_rateGroup1.CycleIn
       # b_rateGroup1.RateGroupMemberOut[0] -> b_tlmSend.Run
       b_rateGroup1.RateGroupMemberOut[0] -> b_fileDownlink.Run
 
       # Rate group 2
-      b_rateGroupDriver.CycleOut[Ports_RateGroups.rateGroup2] -> b_rateGroup2.CycleIn
+      b_rateGroupDriver.CycleOut[b_Ports_RateGroups.rateGroup2] -> b_rateGroup2.CycleIn
       b_rateGroup2.RateGroupMemberOut[0] -> b_bufferManager.schedIn
       # b_rateGroup2.RateGroupMemberOut[0] -> b_cmdSeq.schedIn
 
       # Rate group 3
-      b_rateGroupDriver.CycleOut[Ports_RateGroups.rateGroup3] -> b_rateGroup3.CycleIn
+      b_rateGroupDriver.CycleOut[b_Ports_RateGroups.rateGroup3] -> b_rateGroup3.CycleIn
       b_rateGroup3.RateGroupMemberOut[0] -> b_health.Run
       b_rateGroup3.RateGroupMemberOut[1] -> b_blockDrv.Sched
       b_rateGroup3.RateGroupMemberOut[2] -> b_systemResources.run
@@ -184,10 +184,11 @@ module obcB {
 
     connections hub {
       b_hub.portOut[0] -> b_cmdDisp.seqCmdBuff
-      
+      b_hub.portOut[1] -> b_fileDownlink.bufferReturn
+       
       b_cmdDisp.seqCmdStatus -> b_hub.portIn[0]
       b_fileDownlink.bufferSendOut -> b_hub.portIn[1]
-      b_hub.portOut[1] -> b_fileDownlink.bufferReturn
+
       b_hub.buffersOut -> b_bufferManager.bufferSendIn
     }
 

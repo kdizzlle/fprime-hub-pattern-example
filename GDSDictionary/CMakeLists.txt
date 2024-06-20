@@ -1,7 +1,7 @@
 #####
-# 'GDS' Deployment:
+# 'GDSDictionary' Deployment:
 #
-# This registers the 'GDS' deployment to the build system. 
+# This registers the 'GDSDictionary' deployment to the build system. 
 # Custom components that have not been added at the project-level should be added to 
 # the list below.
 #
