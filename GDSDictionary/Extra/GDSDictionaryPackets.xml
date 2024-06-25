@@ -1,4 +1,0 @@
-<packets name="GDSDictionaryPackets" namespace="GDSDictionary" size="111">
-    <import_topology>obcA/Top/obcATopologyAppAi.xml</import_topology>
-    <import_topology>obcB/Top/obcBTopologyAppAi.xml</import_topology>
-</packets>

@@ -104,10 +104,12 @@ module obcA {
 
       # Rate group 1
       a_rateGroupDriver.CycleOut[a_Ports_RateGroups.rateGroup1] -> a_rateGroup1.CycleIn
+      a_rateGroup1.RateGroupMemberOut[0] -> a_tlmSend.Run
+      a_rateGroup1.RateGroupMemberOut[1] -> a_fileDownlink.Run
+      a_rateGroup1.RateGroupMemberOut[2] -> a_systemResources.run
 
       # Rate group 2
       a_rateGroupDriver.CycleOut[a_Ports_RateGroups.rateGroup2] -> a_rateGroup2.CycleIn
-      a_rateGroup2.RateGroupMemberOut[0] -> a_fileDownlink.Run
       a_rateGroup2.RateGroupMemberOut[1] -> a_cmdSeq.schedIn
 
       # Rate group 3
@@ -115,8 +117,6 @@ module obcA {
       a_rateGroup3.RateGroupMemberOut[0] -> a_health.Run
       a_rateGroup3.RateGroupMemberOut[1] -> a_blockDrv.Sched
       a_rateGroup3.RateGroupMemberOut[2] -> a_bufferManager.schedIn
-      a_rateGroup3.RateGroupMemberOut[3] -> a_systemResources.run
-      a_rateGroup3.RateGroupMemberOut[4] -> a_tlmSend.Run
     }
 
     connections Sequencer {
@@ -150,37 +150,21 @@ module obcA {
     }
     
     connections send_hub {
-      # a_hub.dataOut -> a_hubComQueue.buffQueueIn
       a_hub.dataOut -> a_hubFramer.bufferIn
       a_hub.dataOutAllocate -> a_bufferManager.bufferGetCallee
 
-      # a_hubComQueue.buffQueueSend -> a_hubFramer.bufferIn
-      # a_hubComQueue.comQueueSend -> a_hubFramer.comIn
-
-      # a_hubFramer.framedOut -> a_hubComStub.comDataIn
       a_hubFramer.framedOut -> a_hubComDriver.$send
-      # a_hubFramer.comStatusOut -> a_hubComQueue.comStatusIn
       a_hubFramer.bufferDeallocate -> a_bufferManager.bufferSendIn
       a_hubFramer.framedAllocate -> a_bufferManager.bufferGetCallee
 
-      # a_hubComStub.comStatus -> a_hubFramer.comStatusIn
-      # a_hubComStub.drvDataOut -> a_hubComDriver.$send
-
       a_hubComDriver.deallocate -> a_bufferManager.bufferSendIn
-      # a_hubComDriver.ready -> a_hubComStub.drvConnected
     }
 
     connections recv_hub {
-      # a_hubComDriver.$recv -> a_hubComStub.drvDataIn
       a_hubComDriver.$recv -> a_hubDeframer.framedIn
       a_hubComDriver.allocate -> a_bufferManager.bufferGetCallee
       
-      # a_hubComStub.comDataOut -> a_hubDeframer.framedIn
-
-      # a_cmdDisp.seqCmdStatus -> a_hubDeframer.cmdResponseIn
-
-      a_hubDeframer.bufferOut -> a_hub.dataIn #this works with .bufferIn
-      # a_hubDeframer.comOut -> a_cmdDisp.seqCmdBuff
+      a_hubDeframer.bufferOut -> a_hub.dataIn 
       a_hubDeframer.framedDeallocate -> a_bufferManager.bufferSendIn
       a_hubDeframer.bufferAllocate -> a_bufferManager.bufferGetCallee
 

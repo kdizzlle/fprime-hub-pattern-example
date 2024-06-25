@@ -4,4 +4,3 @@
 add_fprime_subdirectory("${CMAKE_CURRENT_LIST_DIR}/Components")
 add_fprime_subdirectory("${CMAKE_CURRENT_LIST_DIR}/obcA/")
 add_fprime_subdirectory("${CMAKE_CURRENT_LIST_DIR}/obcB/")
-add_fprime_subdirectory("${CMAKE_CURRENT_LIST_DIR}/GDSDictionary/")

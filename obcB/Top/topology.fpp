@@ -55,10 +55,12 @@ module obcB {
 
     command connections instance b_cmdDisp
 
+    # event connections instance b_eventLogger
     event connections instance b_hub 
 
     param connections instance b_prmDb
 
+    # telemetry connections instance b_tlmSend
     telemetry connections instance b_hub
 
     text event connections instance b_textLogger
@@ -93,9 +95,9 @@ module obcB {
 
     # }
 
-    # connections FaultProtection {
-    #   b_eventLogger.FatalAnnounce -> b_fatalHandler.FatalReceive
-    # }
+    connections FaultProtection {
+      b_eventLogger.FatalAnnounce -> b_fatalHandler.FatalReceive
+    }
 
     connections RateGroups {
       # Block driver
@@ -105,6 +107,7 @@ module obcB {
       b_rateGroupDriver.CycleOut[b_Ports_RateGroups.rateGroup1] -> b_rateGroup1.CycleIn
       # b_rateGroup1.RateGroupMemberOut[0] -> b_tlmSend.Run
       b_rateGroup1.RateGroupMemberOut[0] -> b_fileDownlink.Run
+      b_rateGroup1.RateGroupMemberOut[1] -> b_systemResources.run
 
       # Rate group 2
       b_rateGroupDriver.CycleOut[b_Ports_RateGroups.rateGroup2] -> b_rateGroup2.CycleIn
@@ -115,13 +118,12 @@ module obcB {
       b_rateGroupDriver.CycleOut[b_Ports_RateGroups.rateGroup3] -> b_rateGroup3.CycleIn
       b_rateGroup3.RateGroupMemberOut[0] -> b_health.Run
       b_rateGroup3.RateGroupMemberOut[1] -> b_blockDrv.Sched
-      b_rateGroup3.RateGroupMemberOut[2] -> b_systemResources.run
     }
 
-    # connections Sequencer {
-    #   b_cmdSeq.comCmdOut -> b_cmdDisp.seqCmdBuff
-    #   b_cmdDisp.seqCmdStatus -> b_cmdSeq.cmdResponseIn
-    # }
+    connections Sequencer {
+      b_cmdSeq.comCmdOut -> b_cmdDisp.seqCmdBuff
+      b_cmdDisp.seqCmdStatus -> b_cmdSeq.cmdResponseIn
+    }
 
     # connections Uplink {
 
@@ -145,37 +147,21 @@ module obcB {
     }
 
     connections send_hub {
-      # b_hub.dataOut -> b_hubComQueue.buffQueueIn
       b_hub.dataOut -> b_hubFramer.bufferIn
       b_hub.dataOutAllocate -> b_bufferManager.bufferGetCallee
       
-      # b_hubComQueue.buffQueueSend -> b_hubFramer.bufferIn
-      # b_hubComQueue.comQueueSend -> b_hubFramer.comIn
-
-      # b_hubFramer.framedOut -> b_hubComStub.comDataIn
       b_hubFramer.framedOut -> b_hubComDriver.$send
-      # b_hubFramer.comStatusOut -> b_comQueue.comStatusIn
       b_hubFramer.bufferDeallocate -> b_bufferManager.bufferSendIn
       b_hubFramer.framedAllocate -> b_bufferManager.bufferGetCallee
       
-      # b_hubComStub.comStatus -> b_hubFramer.comStatusIn
-      # b_hubComStub.drvDataOut -> b_hubComDriver.$send
-
       b_hubComDriver.deallocate -> b_bufferManager.bufferSendIn
-      # b_hubComDriver.ready -> b_comStub.drvConnected
     }
 
     connections recv_hub {
-      # b_hubComDriver.$recv -> b_hubComStub.drvDataIn
       b_hubComDriver.$recv -> b_hubDeframer.framedIn
       b_hubComDriver.allocate -> b_bufferManager.bufferGetCallee
 
-      # b_hubComStub.comDataOut -> b_hubDeframer.framedIn
-
-      # b_cmdDisp.seqCmdStatus -> b_hubDeframer.cmdResponseIn
-       
       b_hubDeframer.bufferOut -> b_hub.dataIn
-      # b_hubDeframer.comOut -> b_cmdDisp.seqCmdBuff
       b_hubDeframer.bufferAllocate -> b_bufferManager.bufferGetCallee
       b_hubDeframer.framedDeallocate -> b_bufferManager.bufferSendIn
 
@@ -184,10 +170,8 @@ module obcB {
 
     connections hub {
       b_hub.portOut[0] -> b_cmdDisp.seqCmdBuff
-      b_hub.portOut[1] -> b_fileDownlink.bufferReturn
        
       b_cmdDisp.seqCmdStatus -> b_hub.portIn[0]
-      b_fileDownlink.bufferSendOut -> b_hub.portIn[1]
 
       b_hub.buffersOut -> b_bufferManager.bufferSendIn
     }
