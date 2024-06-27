@@ -111,13 +111,13 @@ module obcB {
 
       # Rate group 2
       b_rateGroupDriver.CycleOut[b_Ports_RateGroups.rateGroup2] -> b_rateGroup2.CycleIn
-      b_rateGroup2.RateGroupMemberOut[0] -> b_bufferManager.schedIn
       # b_rateGroup2.RateGroupMemberOut[0] -> b_cmdSeq.schedIn
 
       # Rate group 3
       b_rateGroupDriver.CycleOut[b_Ports_RateGroups.rateGroup3] -> b_rateGroup3.CycleIn
       b_rateGroup3.RateGroupMemberOut[0] -> b_health.Run
       b_rateGroup3.RateGroupMemberOut[1] -> b_blockDrv.Sched
+      b_rateGroup3.RateGroupMemberOut[2] -> b_bufferManager.schedIn
     }
 
     connections Sequencer {

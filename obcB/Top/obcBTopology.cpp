@@ -58,8 +58,12 @@ enum TopologyConstants {
     DEFRAMER_BUFFER_COUNT = 30,
     COM_DRIVER_BUFFER_SIZE = 3000,
     COM_DRIVER_BUFFER_COUNT = 30,
-    BUFFER_MANAGER_ID = 200
+    BUFFER_MANAGER_ID = 200,
 };
+
+// Hub Constants
+const char* REMOTE_HUB_IP_ADDRESS = "192.168.11.2";
+const U32 REMOTE_HUB_PORT = 50500;
 
 // Ping entries are autocoded, however; this code is not properly exported. Thus, it is copied here.
 Svc::Health::PingEntry pingEntries[] = {
@@ -150,7 +154,7 @@ void setupTopology(const TopologyState& state) {
     // Project-specific component configuration. Function provided above. May be inlined, if desired.
     configureTopology();
     // Autocoded parameter loading. Function provided by autocoder.
-    loadParameters();
+    // loadParameters();
     // Autocoded command registration. Function provided by autocoder.
     regCommands();
     // Autocoded task kick-off (active components). Function provided by autocoder.
@@ -163,7 +167,7 @@ void setupTopology(const TopologyState& state) {
         b_comDriver.start(name, true, COMM_PRIORITY, Default::STACK_SIZE);
     }
 
-    b_hubComDriver.configure("192.168.11.2", 50500);
+    b_hubComDriver.configure(REMOTE_HUB_IP_ADDRESS, REMOTE_HUB_PORT);
     Os::TaskString hubName("hub");
     b_hubComDriver.start(hubName, true, COMM_PRIORITY, Default::STACK_SIZE);
 }
