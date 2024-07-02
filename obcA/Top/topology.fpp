@@ -120,8 +120,11 @@ module obcA {
     }
 
     connections Sequencer {
-      a_cmdSeq.comCmdOut -> a_cmdDisp.seqCmdBuff
-      a_cmdDisp.seqCmdStatus -> a_cmdSeq.cmdResponseIn
+      # a_cmdSeq.comCmdOut -> a_cmdDisp.seqCmdBuff 
+      a_cmdSeq.comCmdOut -> a_cmdSplitter.CmdBuff
+      
+      # a_cmdDisp.seqCmdStatus -> a_cmdSeq.cmdResponseIn
+      a_cmdSplitter.forwardSeqCmdStatus -> a_cmdSeq.cmdResponseIn
     }
 
     connections Uplink {
