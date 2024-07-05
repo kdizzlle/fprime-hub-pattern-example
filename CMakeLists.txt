@@ -1,10 +1,10 @@
 ####
-# This sets up the build system for the 'fprime-two-pretty-best-friends' project, including
+# This sets up the build system for the 'fprime-hub-pattern-example' project, including
 # components and deployments from project.cmake. In addition, it imports the core F Prime components.
 ####
 
 cmake_minimum_required(VERSION 3.13)
-project(fprime-two-pretty-best-friends C CXX)
+project(fprime-hub-pattern-example C CXX)
 
 ###
 # F' Core Setup

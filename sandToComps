@@ -1,7 +1,0 @@
-#! /bin/bash
-
-ssh CompA "rm obcA"
-ssh CompB "rm obcB"
-
-scp build-artifacts/arm-hf-linux/obcA/bin/obcA CompA:~
-scp build-artifacts/arm-hf-linux/obcB/bin/obcB CompB:~
