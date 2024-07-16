@@ -91,6 +91,16 @@ module obcA {
       queue size Default.QUEUE_SIZE \
       stack size Default.STACK_SIZE \
       priority 100 \
+
+  instance a_proxySequencer: Components.CmdSequenceForwarder base id 0x4700 \
+      queue size Default.QUEUE_SIZE \
+      stack size Default.STACK_SIZE \
+      priority 100 \
+
+  instance a_proxyGroundInterface: Components.CmdSequenceForwarder base id 0x4800 \
+      queue size Default.QUEUE_SIZE \
+      stack size Default.STACK_SIZE \
+      priority 100 \
   
   # ----------------------------------------------------------------------
   # Queued component instances

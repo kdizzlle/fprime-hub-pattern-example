@@ -50,6 +50,9 @@ module obcA {
     instance a_hubFramer
     instance a_cmdSplitter
 
+    instance a_proxySequencer
+    instance a_proxyGroundInterface
+
     # ----------------------------------------------------------------------
     # Pattern graph specifiers
     # ----------------------------------------------------------------------
@@ -121,10 +124,10 @@ module obcA {
 
     connections Sequencer {
       # a_cmdSeq.comCmdOut -> a_cmdDisp.seqCmdBuff 
-      a_cmdSeq.comCmdOut -> a_cmdSplitter.CmdBuff
+      a_cmdSeq.comCmdOut -> a_cmdSplitter.CmdBuff[1]
       
       # a_cmdDisp.seqCmdStatus -> a_cmdSeq.cmdResponseIn
-      a_cmdSplitter.forwardSeqCmdStatus -> a_cmdSeq.cmdResponseIn
+      a_cmdSplitter.forwardSeqCmdStatus[1] -> a_cmdSeq.cmdResponseIn
     }
 
     connections Uplink {
@@ -135,12 +138,22 @@ module obcA {
 
       a_deframer.framedDeallocate -> a_bufferManager.bufferSendIn
       # a_deframer.comOut -> a_cmdDisp.seqCmdBuff
-      a_deframer.comOut -> a_cmdSplitter.CmdBuff
-      a_cmdSplitter.LocalCmd -> a_cmdDisp.seqCmdBuff
+      a_deframer.comOut -> a_cmdSplitter.CmdBuff[0]
+      a_cmdSplitter.LocalCmd[0] -> a_proxyGroundInterface.seqCmdBuf
+      a_cmdSplitter.LocalCmd[1] -> a_proxySequencer.seqCmdBuf
+
+      a_proxyGroundInterface.comCmdOut -> a_cmdDisp.seqCmdBuff
+      a_proxySequencer.comCmdOut -> a_cmdDisp.seqCmdBuff
 
       # a_cmdDisp.seqCmdStatus -> a_deframer.cmdResponseIn
-      a_cmdDisp.seqCmdStatus -> a_cmdSplitter.seqCmdStatus
-      a_cmdSplitter.forwardSeqCmdStatus -> a_deframer.cmdResponseIn
+      a_cmdDisp.seqCmdStatus -> a_proxyGroundInterface.cmdResponseIn
+      a_cmdDisp.seqCmdStatus -> a_proxySequencer.cmdResponseIn
+
+      a_proxyGroundInterface.seqCmdStatus -> a_cmdSplitter.seqCmdStatus[0]
+      a_proxySequencer.seqCmdStatus -> a_cmdSplitter.seqCmdStatus[1]
+
+
+      a_cmdSplitter.forwardSeqCmdStatus[0] -> a_deframer.cmdResponseIn
 
       a_deframer.bufferAllocate -> a_bufferManager.bufferGetCallee
       a_deframer.bufferOut -> a_fileUplink.bufferSendIn
@@ -178,8 +191,10 @@ module obcA {
       a_hub.LogSend -> a_eventLogger.LogRecv
       a_hub.TlmSend -> a_tlmSend.TlmRecv
       
-      a_cmdSplitter.RemoteCmd -> a_hub.portIn[0]
-      a_hub.portOut[0] -> a_cmdSplitter.seqCmdStatus
+      a_cmdSplitter.RemoteCmd[0] -> a_hub.portIn[0]
+      a_cmdSplitter.RemoteCmd[1] -> a_hub.portIn[1]
+      a_hub.portOut[0] -> a_cmdSplitter.seqCmdStatus[0]
+      a_hub.portOut[1] -> a_cmdSplitter.seqCmdStatus[1]
     }
   }
 

@@ -48,6 +48,8 @@ module obcB {
     instance b_hubComQueue
     instance b_hubDeframer
     instance b_hubFramer
+    instance b_proxyGroundInterface
+    instance b_proxySequencer
 
     # ----------------------------------------------------------------------
     # Pattern graph specifiers
@@ -120,10 +122,10 @@ module obcB {
       b_rateGroup3.RateGroupMemberOut[2] -> b_bufferManager.schedIn
     }
 
-    connections Sequencer {
-      b_cmdSeq.comCmdOut -> b_cmdDisp.seqCmdBuff
-      b_cmdDisp.seqCmdStatus -> b_cmdSeq.cmdResponseIn
-    }
+    # connections Sequencer {
+    #   b_cmdSeq.comCmdOut -> b_cmdDisp.seqCmdBuff
+    #   b_cmdDisp.seqCmdStatus -> b_cmdSeq.cmdResponseIn
+    # }
 
     # connections Uplink {
 
@@ -169,9 +171,17 @@ module obcB {
     }
 
     connections hub {
-      b_hub.portOut[0] -> b_cmdDisp.seqCmdBuff
-       
-      b_cmdDisp.seqCmdStatus -> b_hub.portIn[0]
+      b_hub.portOut[0] -> b_proxyGroundInterface.seqCmdBuf
+      b_hub.portOut[1] -> b_proxySequencer.seqCmdBuf
+
+      b_proxyGroundInterface.comCmdOut -> b_cmdDisp.seqCmdBuff
+      b_proxySequencer.comCmdOut -> b_cmdDisp.seqCmdBuff
+      
+      b_cmdDisp.seqCmdStatus -> b_proxyGroundInterface.cmdResponseIn
+      b_cmdDisp.seqCmdStatus -> b_proxySequencer.cmdResponseIn
+
+      b_proxyGroundInterface.seqCmdStatus -> b_hub.portIn[0]
+      b_proxySequencer.seqCmdStatus -> b_hub.portIn[1]
 
       b_hub.buffersOut -> b_bufferManager.bufferSendIn
     }
