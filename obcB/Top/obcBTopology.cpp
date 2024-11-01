@@ -62,7 +62,7 @@ enum TopologyConstants {
 };
 
 // Hub Constants
-const char* REMOTE_HUB_IP_ADDRESS = "192.168.11.2";
+const char* REMOTE_HUB_IP_ADDRESS = "192.168.0.98";
 const U32 REMOTE_HUB_PORT = 50500;
 
 // Ping entries are autocoded, however; this code is not properly exported. Thus, it is copied here.
